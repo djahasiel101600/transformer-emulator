@@ -3,7 +3,7 @@ services:
     name: poletransmonitor-simulator
     runtime: python
     plan: free
-    buildCommand: pip install -r simulate_device/requirements.txt
+    buildCommand: pip install -r device_simulator/requirements.txt
     startCommand: python simulate_device.py --config config.example.json run
     healthCheckPath: /
     envVars:
