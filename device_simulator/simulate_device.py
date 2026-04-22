@@ -234,11 +234,11 @@ class SimControlHandler(BaseHTTPRequestHandler):
         self._send(200, "application/json", json.dumps({"ok": True}).encode("utf-8"))
 
 
-def _start_control_panel(port: int) -> None:
-    server = HTTPServer(("127.0.0.1", port), SimControlHandler)
+def _start_control_panel(port: int, host: str = "127.0.0.1") -> None:
+    server = HTTPServer((host, port), SimControlHandler)
     t = threading.Thread(target=server.serve_forever, daemon=True, name="sim-control-panel")
     t.start()
-    print(f"[INFO] Control panel: http://localhost:{port}/")
+    print(f"[INFO] Control panel listening on {host}:{port}")
 
 
 class ApiClient:
@@ -1536,6 +1536,7 @@ def _apply_env_overrides(config: dict[str, Any]) -> None:
             panel = config.setdefault("control_panel", {})
             panel["enabled"] = True
             panel["port"] = int(cp_port)
+            panel["host"] = "0.0.0.0"  # must bind on all interfaces for Render
         except ValueError:
             pass
 
@@ -1571,12 +1572,14 @@ def main() -> int:
         enforce_safety(config, specs)
 
         panel_port: int | None = getattr(args, "control_panel", None)
+        panel_host = "127.0.0.1"
         if panel_port is None:
             panel_cfg = config.get("control_panel", {})
             if isinstance(panel_cfg, dict) and panel_cfg.get("enabled"):
                 panel_port = int(panel_cfg.get("port", 8888))
+                panel_host = str(panel_cfg.get("host", "127.0.0.1"))
         if panel_port is not None:
-            _start_control_panel(panel_port)
+            _start_control_panel(panel_port, panel_host)
 
         runtime_cfg = config.get("runtime", {}) if isinstance(config.get("runtime"), dict) else {}
         post_retries = int(runtime_cfg.get("post_retries", 2))

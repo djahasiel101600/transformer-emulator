@@ -1,10 +1,11 @@
 services:
-  - type: worker
+  - type: web
     name: poletransmonitor-simulator
     runtime: python
     plan: free
     buildCommand: pip install -r requirements.txt
     startCommand: python simulate_device.py --config config.example.json run
+    healthCheckPath: /
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.8
@@ -14,3 +15,8 @@ services:
         sync: false
       - key: SIMULATOR_ALLOW_NONLOCAL
         value: "true"
+      - key: SIMULATOR_CONTROL_PANEL_PORT
+        fromService:
+          type: web
+          name: poletransmonitor-simulator
+          envVarKey: PORT
