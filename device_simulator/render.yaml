@@ -1,0 +1,16 @@
+services:
+  - type: worker
+    name: poletransmonitor-simulator
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python simulate_device.py --config config.example.json run
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+      - key: SIMULATOR_BACKEND_URL
+        value: https://poletransmonitor-backend.onrender.com
+      - key: SIMULATOR_DEVICE_API_KEY
+        sync: false
+      - key: SIMULATOR_ALLOW_NONLOCAL
+        value: "true"
