@@ -4,7 +4,7 @@ services:
     runtime: python
     plan: free
     buildCommand: pip install -r ./device_simulator/requirements.txt
-    startCommand: python ./device_simulator/simulate_device.py --config config.example.json run
+    startCommand: python ./device_simulator/simulate_device.py --config ./device_simulator/config.example.json run
     healthCheckPath: /
     envVars:
       - key: PYTHON_VERSION
