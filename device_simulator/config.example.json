@@ -1,0 +1,186 @@
+{
+    "backend_url": "https://poletransmonitor-backend.onrender.com",
+    "request_timeout_seconds": 10,
+    "auth": {
+        "mode": "none"
+    },
+    "safety": {
+        "allow_nonlocal": true,
+        "nonlocal_min_interval_seconds": 5
+    },
+    "runtime": {
+        "post_retries": 2,
+        "retry_backoff_seconds": 0.8,
+        "exit_nonzero_on_send_failures": false
+    },
+    "defaults": {
+        "interval_seconds": 5,
+        "mode": "baseline_noise",
+        "rated_kva": 15
+    },
+    "discovery": {
+        "enabled": false,
+        "transformer_ids": [],
+        "include_inactive": false
+    },
+    "control_panel": {
+        "enabled": true,
+        "port": 8888
+    },
+    "targets": [
+        {
+            "transformer_id": 1,
+            "enabled": false,
+            "interval_seconds": 5,
+            "mode": "baseline_noise",
+            "rated_kva": 15,
+            "seed": 42,
+            "baseline": {
+                "voltage": 230,
+                "current": 26,
+                "power_factor": 0.95,
+                "frequency": 60,
+                "oil_temp": 42,
+                "energy_kwh_start": 10
+            },
+            "noise": {
+                "voltage": 2,
+                "current": 2,
+                "power_factor": 0.02,
+                "frequency": 0.04,
+                "oil_temp": 0.5
+            }
+        },
+        {
+            "transformer_id": 2,
+            "enabled": false,
+            "interval_seconds": 5,
+            "mode": "scenario_profiles",
+            "rated_kva": 25,
+            "seed": 99,
+            "scenario": {
+                "repeat": true,
+                "energy_kwh_start": 2,
+                "steps": [
+                    {
+                        "condition": "normal",
+                        "duration_seconds": 60
+                    },
+                    {
+                        "condition": "heavy_load",
+                        "duration_seconds": 45
+                    },
+                    {
+                        "condition": "overload",
+                        "duration_seconds": 30
+                    },
+                    {
+                        "condition": "critical",
+                        "duration_seconds": 20
+                    }
+                ]
+            }
+        },
+        {
+            "transformer_id": 1,
+            "enabled": false,
+            "interval_seconds": 5,
+            "mode": "csv_replay",
+            "transport": "websocket",
+            "device_api_key": "R273bXYmYSTl1fLTgoXLPDoNK2QA9c0i",
+            "csv": {
+                "path": "readings_export-1.csv",
+                "loop": true,
+                "energy_kwh_start": 0
+            }
+        },
+        {
+            "transformer_id": 1,
+            "enabled": true,
+            "interval_seconds": 15,
+            "mode": "clock_schedule",
+            "transport": "websocket",
+            "device_api_key": "R273bXYmYSTl1fLTgoXLPDoNK2QA9c0i",
+            "rated_kva": 15,
+            "clock": {
+                "timezone": "local",
+                "default_condition": "normal",
+                "energy_kwh_start": 0,
+                "windows": [
+                    {
+                        "from": "00:00",
+                        "to": "06:00",
+                        "conditions": [
+                            {
+                                "condition": "normal",
+                                "weight": 1
+                            }
+                        ]
+                    },
+                    {
+                        "from": "06:00",
+                        "to": "07:00",
+                        "conditions": [
+                            {
+                                "condition": "normal",
+                                "weight": 3
+                            },
+                            {
+                                "condition": "heavy_peak_load",
+                                "weight": 1
+                            }
+                        ]
+                    },
+                    {
+                        "from": "07:00",
+                        "to": "15:00",
+                        "conditions": [
+                            {
+                                "condition": "normal",
+                                "weight": 1
+                            }
+                        ]
+                    },
+                    {
+                        "from": "15:00",
+                        "to": "20:00",
+                        "conditions": [
+                            {
+                                "condition": "normal",
+                                "weight": 3
+                            },
+                            {
+                                "condition": "overload",
+                                "weight": 1
+                            }
+                        ]
+                    },
+                    {
+                        "from": "20:00",
+                        "to": "22:00",
+                        "conditions": [
+                            {
+                                "condition": "heavy_load",
+                                "weight": 2
+                            },
+                            {
+                                "condition": "heavy_peak_load",
+                                "weight": 1
+                            }
+                        ]
+                    },
+                    {
+                        "from": "22:00",
+                        "to": "00:00",
+                        "conditions": [
+                            {
+                                "condition": "normal",
+                                "weight": 1
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}

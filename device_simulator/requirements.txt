@@ -1,0 +1,2 @@
+# No external dependencies — stdlib only.
+# This file exists so Render recognises the directory as a Python service.
