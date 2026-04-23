@@ -86,7 +86,7 @@
             "enabled": false,
             "interval_seconds": 5,
             "mode": "csv_replay",
-            "transport": "websocket",
+            "transport": "http",
             "device_api_key": "R273bXYmYSTl1fLTgoXLPDoNK2QA9c0i",
             "csv": {
                 "path": "readings_export-1.csv",
@@ -99,7 +99,7 @@
             "enabled": true,
             "interval_seconds": 15,
             "mode": "clock_schedule",
-            "transport": "websocket",
+            "transport": "http",
             "device_api_key": "R273bXYmYSTl1fLTgoXLPDoNK2QA9c0i",
             "rated_kva": 15,
             "clock": {
